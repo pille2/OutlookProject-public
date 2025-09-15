@@ -83,18 +83,29 @@ async function getSharePointToken() {
     }
     
     const loginRequest = {
-        scopes: ["https://enveon.sharepoint.com/.default"]
+        scopes: ["https://enveon.sharepoint.com/.default"],
+        prompt: "select_account"
     };
     
     try {
+        // Versuche zuerst Popup-Flow
         const loginResponse = await msalInstance.loginPopup(loginRequest);
         accessToken = loginResponse.accessToken;
-        addDebugLog("SharePoint-Token erhalten");
+        addDebugLog("✅ SharePoint-Token erhalten (Popup)");
         return accessToken;
-    } catch (err) {
-        console.error("Fehler beim Token-Abruf:", err);
-        addErrorLog("Token-Abruf fehlgeschlagen: " + err.message);
-        throw err;
+    } catch (popupError) {
+        console.warn("Popup-Flow fehlgeschlagen, versuche Redirect-Flow:", popupError);
+        addDebugLog("⚠️ Popup blockiert, verwende Redirect-Flow");
+        
+        // Fallback auf Redirect-Flow
+        try {
+            await msalInstance.loginRedirect(loginRequest);
+            // Nach Redirect wird die Seite neu geladen
+        } catch (redirectError) {
+            console.error("Auch Redirect-Flow fehlgeschlagen:", redirectError);
+            addErrorLog("Beide Authentifizierungs-Flows fehlgeschlagen");
+            throw redirectError;
+        }
     }
 }
 
