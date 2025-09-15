@@ -26,7 +26,7 @@ const msalConfig = {
     auth: {
         clientId: "d234e330-bce6-4342-973a-36412caa3dcc",
         authority: "https://login.microsoftonline.com/638e4263-3801-4c47-9a71-d40a53295116",
-        redirectUri: window.location.origin
+        redirectUri: "https://pille2.github.io"
     }
 };
 
