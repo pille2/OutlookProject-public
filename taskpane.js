@@ -289,23 +289,23 @@ async function loadProjectList() {
         console.log("Lade Projektliste...");
         addDebugLog("Starte Projektliste laden...");
         
-        // Versuche zuerst SharePoint zu laden
+        // Lade nur echte SharePoint-Projekte
         if (msalInstance) {
-            addDebugLog("MSAL verfügbar, versuche SharePoint-Verbindung...");
+            addDebugLog("MSAL verfügbar, lade SharePoint-Projekte...");
             try {
                 await loadProjectsFromSharePoint();
                 addDebugLog(`✅ SharePoint-Projektliste geladen: ${projectList.length} Projekte`);
             } catch (sharepointError) {
-                console.warn("❌ SharePoint-Laden fehlgeschlagen:", sharepointError);
+                console.error("❌ SharePoint-Laden fehlgeschlagen:", sharepointError);
                 addErrorLog(`❌ SharePoint-Fehler: ${sharepointError.message}`);
-                addDebugLog("🔄 Fallback auf statische Projektliste...");
-                loadStaticProjectList();
+                showStatus("Fehler beim Laden der SharePoint-Projekte: " + sharepointError.message, "error");
+                return; // Keine Fallback-Projekte mehr
             }
         } else {
-            console.log("❌ MSAL nicht verfügbar, verwende statische Projektliste");
+            console.error("❌ MSAL nicht verfügbar");
             addErrorLog("❌ MSAL nicht verfügbar - MSAL-Bibliothek nicht geladen");
-            addDebugLog("🔄 Verwende statische Projektliste als Fallback");
-            loadStaticProjectList();
+            showStatus("MSAL-Bibliothek nicht geladen - SharePoint-Verbindung nicht möglich", "error");
+            return; // Keine Fallback-Projekte mehr
         }
         
         updateProjectSelect();
@@ -323,23 +323,10 @@ async function loadProjectList() {
         addErrorLog("Fehler beim Laden der Projektliste: " + error.message);
         showStatus("Fehler beim Laden der Projektliste", "error");
         
-        // Fallback auf statische Liste
-        loadStaticProjectList();
-        updateProjectSelect();
+        // Keine Fallback-Projekte mehr - nur echte SharePoint-Projekte
     }
 }
 
-function loadStaticProjectList() {
-    // Statische Projektliste als Fallback
-    projectList = [
-        { id: "PROJ-2024-001", name: "Kundenprojekt Alpha", description: "Projekt Alpha Beschreibung" },
-        { id: "PROJ-2024-002", name: "Kundenprojekt Beta", description: "Projekt Beta Beschreibung" },
-        { id: "PROJ-2024-003", name: "Kundenprojekt Gamma", description: "Projekt Gamma Beschreibung" },
-        { id: "PROJ-2024-004", name: "Kundenprojekt Delta", description: "Projekt Delta Beschreibung" },
-        { id: "PROJ-2024-005", name: "Kundenprojekt Epsilon", description: "Projekt Epsilon Beschreibung" }
-    ];
-    addDebugLog(`Statische Projektliste geladen: ${projectList.length} Projekte`);
-}
 
 function updateProjectSelect() {
     const select = document.getElementById('projectNumber');
