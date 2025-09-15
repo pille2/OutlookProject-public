@@ -280,17 +280,20 @@ async function loadProjectList() {
         
         // Versuche zuerst SharePoint zu laden
         if (msalInstance) {
+            addDebugLog("MSAL verfügbar, versuche SharePoint-Verbindung...");
             try {
                 await loadProjectsFromSharePoint();
-                addDebugLog(`SharePoint-Projektliste geladen: ${projectList.length} Projekte`);
+                addDebugLog(`✅ SharePoint-Projektliste geladen: ${projectList.length} Projekte`);
             } catch (sharepointError) {
-                console.warn("SharePoint-Laden fehlgeschlagen, verwende statische Liste:", sharepointError);
-                addErrorLog("SharePoint-Laden fehlgeschlagen, verwende statische Liste");
+                console.warn("❌ SharePoint-Laden fehlgeschlagen:", sharepointError);
+                addErrorLog(`❌ SharePoint-Fehler: ${sharepointError.message}`);
+                addDebugLog("🔄 Fallback auf statische Projektliste...");
                 loadStaticProjectList();
             }
         } else {
-            console.log("MSAL nicht verfügbar, verwende statische Projektliste");
-            addDebugLog("MSAL nicht verfügbar, verwende statische Projektliste");
+            console.log("❌ MSAL nicht verfügbar, verwende statische Projektliste");
+            addErrorLog("❌ MSAL nicht verfügbar - MSAL-Bibliothek nicht geladen");
+            addDebugLog("🔄 Verwende statische Projektliste als Fallback");
             loadStaticProjectList();
         }
         
