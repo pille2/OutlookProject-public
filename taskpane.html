@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Projektnummer Manager</title>
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script src="https://alcdn.msauth.net/browser/2.34.0/js/msal-browser.min.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="version-info" id="versionInfo">v1.0.0</div>
+        
+        <div id="emailInfo" class="email-info">
+            Lade E-Mail...
+        </div>
+
+        <div class="form-group">
+            <label for="projectNumber">Projektnummer auswählen:</label>
+            <select id="projectNumber" class="project-select">
+                <option value="">Projektnummer wählen...</option>
+                <option value="PROJ-2024-001">PROJ-2024-001 - Kundenprojekt Alpha</option>
+                <option value="PROJ-2024-002">PROJ-2024-002 - Kundenprojekt Beta</option>
+                <option value="PROJ-2024-003">PROJ-2024-003 - Kundenprojekt Gamma</option>
+                <option value="PROJ-2024-004">PROJ-2024-004 - Kundenprojekt Delta</option>
+                <option value="PROJ-2024-005">PROJ-2024-005 - Kundenprojekt Epsilon</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="comment">Kommentar (optional):</label>
+            <textarea id="comment" placeholder="Kommentar zur Projektzuweisung..."></textarea>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" id="assignBtn">Projektnummer zuweisen</button>
+            <button class="btn btn-secondary" id="refreshBtn">Projektliste aktualisieren</button>
+            <button class="btn btn-secondary" id="authBtn" style="display: none;">SharePoint verbinden</button>
+        </div>
+
+        <div class="assignment-history">
+            <h4>Zuweisungs-Historie</h4>
+            <div id="assignmentHistoryList" class="history-list">
+                <div class="history-note">Hinweis: Die Historie ist cookie-basiert und daher nur temporär</div>
+            </div>
+        </div>
+
+        <div id="status"></div>
+        
+        <!-- Debug Panel -->
+        <div id="debugPanel" class="debug-panel" style="display: none;">
+            <div class="debug-header">
+                <h4>Debug & Logs</h4>
+                <button id="toggleDebug" class="debug-toggle">Einblenden</button>
+            </div>
+            <div id="debugContent" class="debug-content" style="display: none;">
+                <div class="debug-section">
+                    <h5>Office.js Status:</h5>
+                    <div id="officeStatus">Prüfe...</div>
+                </div>
+                <div class="debug-section">
+                    <h5>E-Mail Item:</h5>
+                    <div id="emailItemStatus">Prüfe...</div>
+                </div>
+                <div class="debug-section">
+                    <h5>E-Mail Daten:</h5>
+                    <pre id="emailDataDebug">Wird geladen...</pre>
+                </div>
+                <div class="debug-section">
+                    <h5>SharePoint Status:</h5>
+                    <div id="sharepointStatus">Nicht konfiguriert</div>
+                </div>
+                <div class="debug-section">
+                    <h5>Console Logs:</h5>
+                    <div id="consoleLogs"></div>
+                </div>
+                <div class="debug-section">
+                    <h5>Fehler:</h5>
+                    <div id="errorLogs"></div>
+                </div>
+                <div class="debug-section">
+                    <h5>Zuweisungs-Historie:</h5>
+                    <div id="assignmentHistory"></div>
+                </div>
+                <div class="debug-section">
+                    <h5>LocalStorage Keys:</h5>
+                    <div id="localStorageKeys"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="taskpane.js?v=1.0.0"></script>
+</body>
+</html>
